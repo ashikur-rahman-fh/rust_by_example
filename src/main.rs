@@ -98,7 +98,7 @@ fn main() {
 
   impl Display for Color {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-      write!(f, "RGB ({}, {}, {}) 0x{:0>2X}{:0>2X}{:0>2X}", self.red, self.green, self.blue, self.red, self.green, self.blue)
+      write!(f, "RGB ({0}, {1}, {2}) 0x{0:0>2X}{1:0>2X}{2:0>2X}", self.red, self.green, self.blue)
     }
   }
   for color in [
