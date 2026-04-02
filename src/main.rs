@@ -1,6 +1,5 @@
 use std::cmp::{max, min};
-use std::fmt::{Debug, write};
-use std::fmt;
+use std::fmt::{self, Display, Formatter};
 
 fn main() {
   println!("Hello World!");
@@ -64,4 +63,49 @@ fn main() {
 
   let list: List = List(vec![5, 10, 15, 20, 25]);
   println!("My list is {}", list);
+
+
+  // Formatting
+  struct City {
+    name: &'static str,
+    latitude: f32,
+    longigure: f32,
+  }
+
+  impl Display for City {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+      let lat_c: &str = if self.latitude >= 0.0 { "N" } else { "S" };
+      let lon_c: &str = if self.longigure >= 0.0 { "E" } else { "W" };
+
+      write!(f, "{}: {:.3}°{} {:.3}°{}",
+              self.name, self.latitude.abs(), lat_c, self.longigure.abs(), lon_c)
+    }
+  }
+
+  for city in [
+      City { name: "Dublin", latitude: 53.347778, longigure: -6.259722 },
+      City { name: "Oslo", latitude: 59.95, longigure: 10.75 },
+      City { name: "Vancouver", latitude: 49.25, longigure: -123.1 },
+    ] {
+      println!("{}", city);
+    }
+
+  struct Color {
+    red: u8,
+    green: u8,
+    blue: u8,
+  }
+
+  impl Display for Color {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+      write!(f, "RGB ({}, {}, {}) 0x{:0>2X}{:0>2X}{:0>2X}", self.red, self.green, self.blue, self.red, self.green, self.blue)
+    }
+  }
+  for color in [
+    Color { red: 128, green: 255, blue: 90 },
+    Color { red: 0, green: 3, blue: 254 },
+    Color { red: 0, green: 0, blue: 0 },
+  ] {
+    println!("{}", color);
+  }
 }
