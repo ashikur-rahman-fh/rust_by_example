@@ -44,4 +44,24 @@ fn main() {
   let min_max: MinMax = MinMax(55, 10);
   println!("Debug MinMax = {:?}", min_max);
   println!("Display MinMax = {}", min_max);
+
+  struct List(Vec<i32>);
+
+  impl fmt::Display for List {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+      write!(f, "[")?;
+      let vec: &Vec<i32> = &self.0;
+
+      for (index, value) in vec.iter().enumerate() {
+        if index != 0 {
+          write!(f, ", ")?;
+        }
+        write!(f, "{}: {}", index, value)?;
+      }
+      return write!(f, "]");
+    }
+  }
+
+  let list: List = List(vec![5, 10, 15, 20, 25]);
+  println!("My list is {}", list);
 }
