@@ -1,4 +1,6 @@
-use std::fmt::Debug;
+use std::cmp::{max, min};
+use std::fmt::{Debug, write};
+use std::fmt;
 
 fn main() {
   println!("Hello World!");
@@ -27,4 +29,19 @@ fn main() {
 
   println!("Deep structure = {:?}", deep);
   println!("Pretty print structure = {:#?}", deep);
+
+
+  // display
+  #[derive (Debug)]
+  struct MinMax(i64, i64);
+
+  impl fmt::Display for MinMax {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+      return write!(f, "Min = {} Max = {}", min(self.0, self.1), max(self.0, self.1));
+    }
+  }
+
+  let min_max: MinMax = MinMax(55, 10);
+  println!("Debug MinMax = {:?}", min_max);
+  println!("Display MinMax = {}", min_max);
 }
