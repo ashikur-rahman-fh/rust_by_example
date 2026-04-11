@@ -66,4 +66,10 @@ fn main() {
   vec.push(elem);
 
   println!("vec = {:#?} type is {}", vec, type_name_of_val(&vec));
+
+  // aliasing
+  // same as enums and other alias using type keyword
+  type NanoSecond = u64;
+  let nano: NanoSecond = 11.12 as NanoSecond;
+  println!("Value of nano is {} and type is {}", nano, type_name_of_val(&nano));
 }
