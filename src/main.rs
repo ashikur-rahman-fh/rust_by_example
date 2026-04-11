@@ -37,4 +37,20 @@ fn main() {
     let not_safe = 300.00_f32.to_int_unchecked::<u8>();
     println!("Value of not safe is casted to {}", not_safe);
   }
+
+  // literals
+  // Numeric literal can be type annotated by adding suffix;
+  let x = 1u8;
+  let y = 2i32;
+  let z = 3f64;
+
+  // un-suffixed are types depending on how they are used
+  let i = 1;
+  let f = 1.0;
+
+  println!("Value of x is {} and size is {}", x, std::mem::size_of_val(&x));
+  println!("Value of y is {} and size is {}", y, std::mem::size_of_val(&y));
+  println!("Value of z is {} and size is {}", z, std::mem::size_of_val(&z));
+  println!("Value of i is {} and size is {}", i, std::mem::size_of_val(&i));
+  println!("Value of f is {} and size is {}", f, std::mem::size_of_val(&f));
 }
