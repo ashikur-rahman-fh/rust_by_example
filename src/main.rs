@@ -1,77 +1,40 @@
-// bypass errors and warnings
-#![allow(dead_code)]
+// Suppress all error s from casts which overflow
+// #![allow(overflowing_literals)]
 
-use std::fmt::{Debug};
-
-// structure
-#[derive(Debug)]
-struct Person {
-  name: String,
-  age: u8,
-}
-
-// uit structure
-#[derive(Debug)]
-struct Unit;
-
-// tuple structure
-#[derive(Debug)]
-struct Pair(i32, f32);
-
-// structure with two fields
-#[derive(Debug)]
-struct Point {
-  x: i32,
-  y: i32,
-}
-
-// a structure can reuse another structure as fields
-#[derive(Debug)]
-struct Rectangle {
-  top_left: Point,
-  bottom_right: Point,
-}
+use core::f32;
+use std::any::type_name_of_val;
 
 fn main() {
-  // create structure with field init shorthand
-  let name: String = String::from("Ash");
-  let age: u8 = 30;
-  let ash: Person = Person { age, name };
-  println!("{:?}", ash);
+  // casting
+  /*
+    Rust does not provide implicit type conversion between primitive types.
+    For explicit casting we can use `as` keyword.
 
-  // instantiate a point
-  let first_point: Point = Point { x: 20, y: 40 };
-  let second_point: Point = Point { x : 40, y: 60 };
+    It mostly follow C conventions except in case where C has overflow behavior.
+   */
 
-  println!("First point x = {}, y = {}", first_point.x, first_point.y);
-  println!("Second point x = {}, y = {}", second_point.x, second_point.y);
+  let decimal: f64 = 97.123;
+  println!("Value of decimal is = {} and type is {}", decimal, type_name_of_val(&decimal));
 
-  // make new point using struct updated syntax
-  let new_point: Point = Point { x: 100, ..second_point };
+  // explicit conversion
+  let integer: u8 = decimal as u8;
+  println!("value of integer is {} and type is {}", integer, type_name_of_val(&integer));
 
-  println!("The new point is {:?}", new_point);
+  // only u8 can be converted to char
+  let char: char = integer as char;
+  println!("Casting: {} -> {} -> {}", decimal, integer, char);
 
-  // destructuring with new name
-  let Point { x: left_edge, y: top_edge } = new_point;
-  // destructuring with same name
-  let Point {x, y} = new_point;
-  println!("{} {}", left_edge, top_edge);
-  println!("{} {}", x, y);
+  let sci : f32 = 1e5;
+  println!("Value of sci is {} and type is {}", sci, type_name_of_val(&sci));
 
-  let rectangle: Rectangle = Rectangle {
-    top_left: Point { x: left_edge, y: top_edge },
-    bottom_right: first_point,
-  };
 
-  println!("The rectangle is = {:?}", rectangle);
+  let nan = f32::NAN;
+  println!("Value of nan is {} and type is {}", nan, type_name_of_val(&nan));
 
-  let unit: Unit = Unit;
-  println!("Unit struct is = {:?}", unit);
 
-  let pair: Pair = Pair(1, 2.11);
-  println!("The pair.first = {} pair.second = {:.2}", pair.0, pair.1);
-
-  // destructing pair structure
-  let Pair(integer, decimal) = pair;
-  println!("The integer value is {} and decimal is {}", integer, decimal);
+  // some runtime improvement with unsafe operations
+  unsafe {
+    let not_safe = 300.00_f32.to_int_unchecked::<u8>();
+    println!("Value of not safe is casted to {}", not_safe);
+  }
 }
