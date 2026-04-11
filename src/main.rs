@@ -53,4 +53,17 @@ fn main() {
   println!("Value of z is {} and size is {}", z, std::mem::size_of_val(&z));
   println!("Value of i is {} and size is {}", i, std::mem::size_of_val(&i));
   println!("Value of f is {} and size is {}", f, std::mem::size_of_val(&f));
+
+  // inference
+  /*
+    The type inference engine is pretty smart. It does more than looking at the
+    type of the value expressing during an initialization. If also looks at how
+    variable is used afterwards to infer type.
+   */
+  let elem: u8 = 10;
+
+  let mut vec = Vec::new();
+  vec.push(elem);
+
+  println!("vec = {:#?} type is {}", vec, type_name_of_val(&vec));
 }
