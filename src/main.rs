@@ -1,75 +1,51 @@
-// Suppress all error s from casts which overflow
-// #![allow(overflowing_literals)]
-
-use core::f32;
-use std::any::type_name_of_val;
-
 fn main() {
-  // casting
-  /*
-    Rust does not provide implicit type conversion between primitive types.
-    For explicit casting we can use `as` keyword.
+  // From and Into
+  // From and Into are used to convert one type to another. And it's assumed
+  // if A is converted to B, then it should be easy to convert B to A.
 
-    It mostly follow C conventions except in case where C has overflow behavior.
-   */
+  // From - From trait allows for a type to define how to create itself from
+  // another type.
 
-  let decimal: f64 = 97.123;
-  println!("Value of decimal is = {} and type is {}", decimal, type_name_of_val(&decimal));
+  // example
+  let my_str = "hello";
+  let my_string = String::from(my_str);
+  println!("{}", my_string);
 
-  // explicit conversion
-  let integer: u8 = decimal as u8;
-  println!("value of integer is {} and type is {}", integer, type_name_of_val(&integer));
+  // We can implement our own from trait
 
-  // only u8 can be converted to char
-  let char: char = integer as char;
-  println!("Casting: {} -> {} -> {}", decimal, integer, char);
-
-  let sci : f32 = 1e5;
-  println!("Value of sci is {} and type is {}", sci, type_name_of_val(&sci));
-
-
-  let nan = f32::NAN;
-  println!("Value of nan is {} and type is {}", nan, type_name_of_val(&nan));
-
-
-  // some runtime improvement with unsafe operations
-  unsafe {
-    let not_safe = 300.00_f32.to_int_unchecked::<u8>();
-    println!("Value of not safe is casted to {}", not_safe);
+  #[derive(Debug)]
+  struct Number {
+    value: i32,
   }
 
-  // literals
-  // Numeric literal can be type annotated by adding suffix;
-  let x = 1u8;
-  let y = 2i32;
-  let z = 3f64;
+  impl From<i32> for Number {
+    fn from(v: i32) -> Self {
+      Number { value: v }
+    }
+  }
 
-  // un-suffixed are types depending on how they are used
-  let i = 1;
-  let f = 1.0;
+  let num = Number::from(44);
+  println!("My number is {:#?}", num);
 
-  println!("Value of x is {} and size is {}", x, std::mem::size_of_val(&x));
-  println!("Value of y is {} and size is {}", y, std::mem::size_of_val(&y));
-  println!("Value of z is {} and size is {}", z, std::mem::size_of_val(&z));
-  println!("Value of i is {} and size is {}", i, std::mem::size_of_val(&i));
-  println!("Value of f is {} and size is {}", f, std::mem::size_of_val(&f));
 
-  // inference
-  /*
-    The type inference engine is pretty smart. It does more than looking at the
-    type of the value expressing during an initialization. If also looks at how
-    variable is used afterwards to infer type.
-   */
-  let elem: u8 = 10;
+  // Into - Into trait is reciprocal of the From trait. It defines how to
+  // convert a type into another.
 
-  let mut vec = Vec::new();
-  vec.push(elem);
+  // impl Into<Number> for i32 {
+  //   fn into(self) -> Number {
+  //     Number{ value: self }
+  //   }
+  // }
 
-  println!("vec = {:#?} type is {}", vec, type_name_of_val(&vec));
+  // let num: Number = 32.into();
+  // println!("My number is {:#?}", num);
 
-  // aliasing
-  // same as enums and other alias using type keyword
-  type NanoSecond = u64;
-  let nano: NanoSecond = 11.12 as NanoSecond;
-  println!("Value of nano is {} and type is {}", nano, type_name_of_val(&nano));
+  // IMPORTANT NOTE: Can not implement both from and into. They are
+  // interchangeable.
+  // Just defining from is enough for into.
+
+  let var: i32 = 55;
+  let new_num: Number = var.into();
+
+  println!("New number is {:#?} value is {}", new_num, new_num.value);
 }
