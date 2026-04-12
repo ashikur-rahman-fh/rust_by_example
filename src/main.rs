@@ -1,3 +1,6 @@
+use core::fmt;
+use std::{fmt::Error, num::ParseIntError, str::FromStr};
+
 fn main() {
   // From and Into
   // From and Into are used to convert one type to another. And it's assumed
@@ -77,4 +80,58 @@ fn main() {
 
   assert_eq!(4i32.try_into(), Ok(EvenNumber(4)));
   assert_ne!(5i32.try_into(), Ok(EvenNumber(5)));
+
+  // To and From Strings
+  // converting to string
+  // similar to to_string method but here just to implement ToString trait.
+
+  struct Circle {
+    radius: i32,
+  }
+
+  // impl ToString for Circle {
+  //   fn to_string(&self) -> String {
+  //     let val = format!("ToString Circle with radius {}", self.radius);
+  //     return val;
+  //   }
+  // }
+
+  // Rather doing that directly, we should try implementing the Display trait,
+  // which automatically provides ToString and also allows printing type
+  impl fmt::Display for Circle {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+      write!(f, "Circle of radius {}", self.radius)
+    }
+  }
+
+  let circle = Circle { radius: 6 };
+  println!("{}", circle.to_string());
+
+  // parsing a string
+  // it is always useful to convert a string to many types. One of the common
+  // operations is to convert string to number.
+
+  let parse: i32 = "5".parse().unwrap();
+  let turbo_parsed = "55".parse::<i32>().unwrap();
+
+  let sum = parse + turbo_parsed;
+  println!("The sum is {}", sum);
+
+  // for user defined type
+  // we need to implement the FromStr trait
+
+  impl FromStr for Circle {
+    type Err = ParseIntError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+      match s.trim().parse() {
+        Ok(num) => Ok(Circle { radius: num }),
+        Err(e) => Err(e),
+      }
+    }
+  }
+
+  let rad = "    3   ";
+  let circle = rad.parse::<Circle>().unwrap();
+  println!("{}", circle.to_string());
 }
