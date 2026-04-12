@@ -48,4 +48,33 @@ fn main() {
   let new_num: Number = var.into();
 
   println!("New number is {:#?} value is {}", new_num, new_num.value);
+
+  // TryFrom and TryInto
+  // Similar to try and into but used for fallible conversions.
+
+  #[derive(Debug, PartialEq)]
+  struct EvenNumber(i32);
+
+  impl TryFrom<i32> for EvenNumber {
+    type Error = ();
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+      if value % 2 == 0 {
+        Ok(EvenNumber(value))
+      } else {
+        Err(())
+      }
+    }
+  }
+
+  let good_even: EvenNumber = EvenNumber::try_from(100).unwrap_or(EvenNumber(0));
+  let bad_even: EvenNumber = EvenNumber::try_from(101).unwrap_or(EvenNumber(0));
+
+  println!("The good even is {:#?} and the bad even is {:#?}", good_even, bad_even);
+
+  assert_eq!(EvenNumber::try_from(2), Ok(EvenNumber(2)));
+  assert_eq!(EvenNumber::try_from(3), Err(()));
+  assert_ne!(EvenNumber::try_from(5), Ok(EvenNumber(5)));
+
+  assert_eq!(4i32.try_into(), Ok(EvenNumber(4)));
+  assert_ne!(5i32.try_into(), Ok(EvenNumber(5)));
 }
